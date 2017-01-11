@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[MapVC viewDidLoad]:MapVC.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "(point.x - prevPoint.x)">
+            </PersistentString>
+            <PersistentString
+               value = "prevPoint.x">
+            </PersistentString>
+            <PersistentString
+               value = "point.y - prevPoint.y">
+            </PersistentString>
+            <PersistentString
+               value = "prevPoint.y">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
