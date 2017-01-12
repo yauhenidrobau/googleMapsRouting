@@ -3,6 +3,17 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "-[CurveBezierView drawRect:]:CurveBezierView.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[MapVC drawBezier:inContext:]:MapVC.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "(curX - endPt.x)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[MapVC viewDidLoad]:MapVC.m">
          <PersistentStrings>
             <PersistentString

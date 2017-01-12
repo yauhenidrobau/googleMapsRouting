@@ -15,6 +15,7 @@
 		1EC7522B1E262B600045C12E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1EC752291E262B600045C12E /* LaunchScreen.storyboard */; };
 		1EC752341E262CAB0045C12E /* MapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC752331E262CAB0045C12E /* MapVC.m */; };
 		1EC752361E26318B0045C12E /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EC752351E26318B0045C12E /* MapKit.framework */; };
+		1EC752441E278B620045C12E /* SAMCubicSpline.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC752431E278B620045C12E /* SAMCubicSpline.m */; };
 		AC5FB6E8B383405FCDA33B7D /* Pods_GoogleMapsRouting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4810E24DA26DA3426A2D9EBF /* Pods_GoogleMapsRouting.framework */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +33,8 @@
 		1EC752321E262CAB0045C12E /* MapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapVC.h; path = ViewControllers/MapVC.h; sourceTree = "<group>"; };
 		1EC752331E262CAB0045C12E /* MapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapVC.m; path = ViewControllers/MapVC.m; sourceTree = "<group>"; };
 		1EC752351E26318B0045C12E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		1EC752421E278B620045C12E /* SAMCubicSpline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAMCubicSpline.h; sourceTree = "<group>"; };
+		1EC752431E278B620045C12E /* SAMCubicSpline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAMCubicSpline.m; sourceTree = "<group>"; };
 		4810E24DA26DA3426A2D9EBF /* Pods_GoogleMapsRouting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoogleMapsRouting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		61DE500DA8768296648E431F /* Pods-GoogleMapsRouting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoogleMapsRouting.release.xcconfig"; path = "Pods/Target Support Files/Pods-GoogleMapsRouting/Pods-GoogleMapsRouting.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -70,6 +73,7 @@
 		1EC752171E262B600045C12E /* GoogleMapsRouting */ = {
 			isa = PBXGroup;
 			children = (
+				1EC752381E2775AB0045C12E /* ThirdParty */,
 				1EC7521B1E262B600045C12E /* AppDelegate.h */,
 				1EC7521C1E262B600045C12E /* AppDelegate.m */,
 				1EC752321E262CAB0045C12E /* MapVC.h */,
@@ -90,6 +94,16 @@
 				1EC752191E262B600045C12E /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1EC752381E2775AB0045C12E /* ThirdParty */ = {
+			isa = PBXGroup;
+			children = (
+				1EC752421E278B620045C12E /* SAMCubicSpline.h */,
+				1EC752431E278B620045C12E /* SAMCubicSpline.m */,
+			);
+			name = ThirdParty;
+			path = Frameworks/ThirdParty;
 			sourceTree = "<group>";
 		};
 		852A9D49486531532ECDA388 /* Frameworks */ = {
@@ -233,6 +247,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1EC752261E262B600045C12E /* GoogleMapsRouting.xcdatamodeld in Sources */,
+				1EC752441E278B620045C12E /* SAMCubicSpline.m in Sources */,
 				1EC752341E262CAB0045C12E /* MapVC.m in Sources */,
 				1EC7521D1E262B600045C12E /* AppDelegate.m in Sources */,
 				1EC7521A1E262B600045C12E /* main.m in Sources */,

@@ -8,6 +8,7 @@
 
 #import "MapVC.h"
 #import <CoreLocation/CoreLocation.h>
+#import "SAMCubicSpline.h"
 
 @import GoogleMaps;
 
@@ -25,19 +26,52 @@
 @implementation MapVC
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     
-    self.points = @[[NSValue valueWithCGPoint:CGPointMake(-31.866, 51.195)],
-                    [NSValue valueWithCGPoint:CGPointMake(-32.866, 52.195)],
-                    [NSValue valueWithCGPoint:CGPointMake(-33.866, 53.195)],
-                    [NSValue valueWithCGPoint:CGPointMake(-24.866, -48.195)],
-                    [NSValue valueWithCGPoint:CGPointMake(-25.866, 55.195)],
-                    [NSValue valueWithCGPoint:CGPointMake(-36.866, 56.195)],
-                    [NSValue valueWithCGPoint:CGPointMake(-37.866, 57.195)],
-                    [NSValue valueWithCGPoint:CGPointMake(-38.866, -58.195)],
-                    [NSValue valueWithCGPoint:CGPointMake(-39.866, 59.195)],
-                    [NSValue valueWithCGPoint:CGPointMake(-40.866, 60.195)]];
+    self.points = @[[NSValue valueWithCGPoint:CGPointMake(53.8, 27)],
+                    [NSValue valueWithCGPoint:CGPointMake(53, 29)],
+                    [NSValue valueWithCGPoint:CGPointMake(52.715543, 28.814323)],
+                    [NSValue valueWithCGPoint:CGPointMake(52.278639, 28.646759)],
+                    [NSValue valueWithCGPoint:CGPointMake(52.726706, 28.679718)],
+                    [NSValue valueWithCGPoint:CGPointMake(52.573407, 27.657989)],
+                    [NSValue valueWithCGPoint:CGPointMake(52.846305, 26.592316)],
+                    [NSValue valueWithCGPoint:CGPointMake(52.560051, 25.636505)],
+                    [NSValue valueWithCGPoint:CGPointMake(53.628739, 26.526398)],
+                    [NSValue valueWithCGPoint:CGPointMake(53.687333, 27.042755)]];
+        //DEMO
+//    CGSize graphSize = CGSizeMake(100.0f, 100.0f);
+//    for (CGFloat x = 0.0f; x < size.width; x++) {
+//        // Get the Y value of our point
+//        CGFloat y = [spline interpolate:x / size.width] * size.height;
+//        
+//        // Add the point to the context's path
+//        if (x == 0.0f) {
+//            CGContextMoveToPoint(context, x, y);
+//        } else {
+//            CGContextAddLineToPoint(context, x, y);
+//        }
+//    }
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    SAMCubicSpline *spline = [[SAMCubicSpline alloc] initWithPoints:_points];
+    CGSize graphSize = self.mapView.frame.size;
+    for (CGFloat x = 0.0f; x < 1.4; x = x + 0.014) {
+        // Get the Y value of our point
+        CGFloat y = [spline interpolate:x / 1.4] * 1;
+        
+        [_coordinatesArray addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+        // Add the point to the context's path
+        if (x == 0.0f) {
+            CGContextMoveToPoint(context, x, y);
+        } else {
+            CGContextAddLineToPoint(context, x, y);
+        }
+    }
+    
     self.coordinatesArray = [[NSMutableArray alloc]init];
+//    [self drawBezier:self.view.bounds inContext:context];
+    
     
     CGPoint firstPoint = ((NSValue *)_points.firstObject).CGPointValue;
     CGPoint lastPoint = ((NSValue *)_points.lastObject).CGPointValue;
@@ -47,8 +81,8 @@
     CLLocationDegrees endLongitudeDeg = lastPoint.y;
     
     CLLocationCoordinate2D startPosition = CLLocationCoordinate2DMake(startLatitudeDeg, startLongitudeDeg);
-    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:-43.866
-                                longitude:58.195
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:startLatitudeDeg
+                                longitude:startLongitudeDeg
                                      zoom:2
                                   bearing:30
                              viewingAngle:40];
@@ -59,7 +93,9 @@
     NSMutableArray *bezierPoints = [NSMutableArray array];
     CGPathApply(yourCGPath, (__bridge void * _Nullable)(bezierPoints), MyCGPathApplierFunc);
     
-    for (NSValue *point in bezierPoints) {
+
+    
+    for (NSValue *point in _coordinatesArray) {
         CGPoint mapPoint = point.CGPointValue;
         [path addCoordinate:CLLocationCoordinate2DMake(mapPoint.x, mapPoint.y)];
     }
@@ -76,7 +112,7 @@
     
     GMSPolyline *polyline = [GMSPolyline polylineWithPath:path];
     polyline.strokeColor = BLUE_COLOR;
-    polyline.strokeWidth = 5.f;
+    polyline.strokeWidth = 2.f;
     polyline.map = self.mapView;
 }
 - (void)didReceiveMemoryWarning {
@@ -115,7 +151,7 @@ void MyCGPathApplierFunc (void *info, const CGPathElement *element) {
     }
 }
 
--(UIBezierPath *)quadCurvedPathWithPoints:(NSArray *)points
+- (UIBezierPath *)quadCurvedPathWithPoints:(NSArray *)points
 {
     UIBezierPath *path = [UIBezierPath bezierPath];
     
@@ -140,6 +176,7 @@ void MyCGPathApplierFunc (void *info, const CGPathElement *element) {
         
         p1 = p2;
     }
+    [path stroke];
     return path;
 }
 
@@ -155,9 +192,89 @@ static CGPoint controlPointForPoints(CGPoint p1, CGPoint p2) {
         controlPoint.y += diffY;
     else if (p1.y > p2.y)
         controlPoint.y -= diffY;
+    
     return controlPoint;
 }
 
+- (void)drawBezier:(CGRect)rect inContext:(CGContextRef)context {
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    
+    CGPoint startPt = [[_points objectAtIndex:0] CGPointValue];
+    CGPoint endPt = [[_points objectAtIndex:(self.points.count - 1)] CGPointValue];
+    
+    float amount = endPt.x - startPt.x;
+    
+    int (^factorial)(int k) = ^(int k) {
+        if (k == 0)
+        {
+            return 1;
+        }
+        int m = 1;
+        for (int i = 1; i <= k; i++)
+        {
+            m *= i;
+        }
+        return m;
+    };
+    
+    
+    //< Curve Equation
+    float (^bezierSpline)(int rank, float ux) = ^(int rank, float ux) {
+        
+        float p = 0.0f;
+        
+        for (int i = 0; i < rank; i++)
+        {
+            CGPoint pt = [[_points objectAtIndex:i] CGPointValue];
+            
+            p += pt.y * powf((1 - ux), (rank - i - 1)) * powf(ux, i) * (factorial(rank - 1) / (factorial(i) * factorial(rank - i - 1)));
+        }
+        
+        return p;
+    };
+    
+    //    for (int i = 0; i < MIN(self.pointCount, [_points count]); i++)
+    //    {
+    //
+    //        CGPoint pt = [[_points objectAtIndex:i] CGPointValue];
+    //
+    //        float u = (pt.x - startPt.x) / amount;
+    //
+    //        if (i == 0)
+    //        {
+    //            [path moveToPoint:pt];
+    //        }
+    //        else
+    //        {
+    //            [path addLineToPoint:CGPointMake(pt.x, bezierSpline(self.pointCount, u))];
+    //            if (i < ([_points count] - 1))
+    //            {
+    //                CGPoint prevPt = [[_points objectAtIndex:(i-1)] CGPointValue];
+    //                CGPoint nextPt = [[_points objectAtIndex:(i+1)] CGPointValue];
+    //                [path addCurveToPoint:pt controlPoint1:prevPt controlPoint2:nextPt];
+    //            }
+    //            else
+    //            {
+    //                [path addLineToPoint:pt];
+    //            }
+    //        }
+    //    }
+    
+    [path moveToPoint:startPt];
+    
+    for (float curX = startPt.x; (curX - endPt.x) < 1e-5; curX += 1.0f)
+    {
+        float u = (curX - startPt.x) / amount;
+        [path addLineToPoint:CGPointMake(curX, bezierSpline(self.points.count, u))];
+        CGPoint point = CGPointMake(curX, bezierSpline(self.points.count, u));
+        [_coordinatesArray addObject:[NSValue valueWithCGPoint:point]];
+    }
+    
+    CGContextSetLineWidth(context, 1.0f);
+    CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
+    CGContextAddPath(context, path.CGPath);
+    CGContextStrokePath(context);
+}
 /*
 #pragma mark - Navigation
 
